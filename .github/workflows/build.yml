@@ -1,7 +1,7 @@
 name: APK Yapici
 
 on:
-  workflow_dispatch: # Biz istedigimizde elle baslatabilmek icin
+  workflow_dispatch:
 
 jobs:
   build:
@@ -15,6 +15,8 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y build-essential ccache git zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libsqlite3-dev libffi-dev wget curl libbz2-dev openjdk-17-jdk-headless unzip
+        # Kivy ve Buildozer icin ekstra gereken grafik/derleme paketleri:
+        sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libgl1-mesa-dev libgles2-mesa-dev python3-setuptools pkg-config
 
     - name: Python Kur
       uses: actions/setup-python@v5
@@ -24,7 +26,8 @@ jobs:
     - name: Buildozer ve Cython Kur
       run: |
         pip install --upgrade pip
-        pip install buildozer cython git+https://github.com/kivy/kivy.git@master
+        pip install "cython<3.0.0"
+        pip install buildozer kivy
 
     - name: APK'yi Uret (Bu biraz zaman alabilir)
       run: |
