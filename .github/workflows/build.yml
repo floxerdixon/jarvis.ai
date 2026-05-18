@@ -11,37 +11,16 @@ jobs:
     - name: Kodu Cek
       uses: actions/checkout@v4
 
-    - name: Sistem Paketlerini Kur
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y build-essential ccache git zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libsqlite3-dev libffi-dev wget curl libbz2-dev openjdk-17-jdk-headless unzip
-        sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libgl1-mesa-dev libgles2-mesa-dev python3-setuptools pkg-config
-
-    - name: Python Kur
-      uses: actions/setup-python@v5
+    # Bu hazir eylem, tum Android SDK, NDK ve lisans ayarlarini otomatik ve hatasiz yapar.
+    - name: Buildozer ile APK Uret
+      uses: ArtemSanya/buildozer-action@v1
       with:
-        python-version: '3.11'
+        workdir: .
+        buildozer_version: stable
 
-    - name: Buildozer Kur
-      run: |
-        pip install --upgrade pip
-        pip install buildozer
-
-    - name: Android SDK Lisanslarini Kesin Onayla
-      run: |
-        # Buildozer'in Android klasorlerini ve lisans dosyalarini onceden zorla olusturuyoruz
-        mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
-        # Tum bilinen Android lisans sozlesmelerini otomatik olarak kabul edilmis saydiriyoruz:
-        echo -e "\n89354d86b5036511a32b215760139056f7566dbe\nd56f5187479451eabf01fb74bf679004a47615c3\n24333f1a63b682509d31960213594655d91361f4" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
-        echo -e "\n84831b9409646a547e30e925b4d9e378d50d3594" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-preview-license
-        yes | buildozer android licenses || true
-
-    - name: APK'yi Uret (Bu biraz zaman alabilir)
-      run: |
-        buildozer android debug
-        
     - name: APK Dosyasini Yukle
       uses: actions/upload-artifact@v4
       with:
         name: Jarvis-AI-APK
         path: bin/*.apk
+        
