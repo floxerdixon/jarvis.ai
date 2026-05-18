@@ -27,6 +27,13 @@ jobs:
         pip install --upgrade pip
         pip install buildozer
 
+    - name: Android Lisanslarini Otomatik Onayla
+      run: |
+        mkdir -p ~/.android
+        touch ~/.android/repositories.cfg
+        # Gelebilecek tum Android lisans sorularina otomatik 'yes' (y) cevabi veriyoruz:
+        yes | buildozer android licenses
+
     - name: APK'yi Uret (Bu biraz zaman alabilir)
       run: |
         buildozer android debug
